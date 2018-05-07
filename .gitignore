@@ -1,3 +1,4 @@
 setting.py
 
 output/
+__pycache__/
