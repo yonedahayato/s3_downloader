@@ -90,17 +90,13 @@ class S3_Downloader:
 
     def make_download_list(self):
         self.file_summary_df_concat.to_csv(os.path.join(self.output_dir_name, self.output_list_name) + ".csv")
-        # with open(os.path.join(self.output_dir, self.output_list_name) + ".csv", "a"):
-        #     csvWriter = csv.writer(f)
-        #     for file_path in self.download_file_path_list:
-        #         csvWriter.writerow([file_path])
 
 
 def main():
     s3d = S3_Downloader()
     s3d.check_all_items(verbose=False)
     s3d.sort_size_each_directory()
-    # s3d.download()
+    s3d.download()
     s3d.make_download_list()
 
 
