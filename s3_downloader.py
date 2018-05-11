@@ -1,4 +1,5 @@
 import boto3
+from boto3 import Session
 import csv
 import os
 import pandas as pd
@@ -27,6 +28,8 @@ class S3_Downloader:
         print("region_name: {}".format(boto3.DEFAULT_SESSION))
         self.bucket = self.s3.Bucket(self.bucket_name)
 
+        self.s3client = Session().client("s3")
+
     def print_object_info(self, obj):
         print(obj)
         print(obj.key)
@@ -44,6 +47,28 @@ class S3_Downloader:
             self.file_size_list.append(obj.size)
 
         print("*"*len(msg))
+
+    def check_prefix_items(self):
+        msg = self.msg.format("[check_prefix_items]")
+        print(msg)
+        for cnt, dir_name in enumerate(DIR_LIST):
+            response = self.s3client.list_objects(Bucket=self.bucket_name, Prefix=dir_name)
+
+            if "Contents" in response:
+                keys = [content["Key"] for content in response["Contents"]]
+
+                print("IsTruncated: {}".format(response["IsTruncated"]))
+                if response["IsTruncated"]: # 1000件以上の場合
+                    # keys = [obj.key for obj in self.bucket.objects.all() if obj.key.startswith(dir_name)]
+                    pass
+
+                for File in FILE_LIST:
+                    if File in keys:
+                        print(File)
+            else:
+                print("{} is empty".format(dir_name))
+
+        self.download_file_path_list = FILE_LIST
 
     def check_items_num(self):
         objects = list(self.bucket.objects.all())
@@ -70,6 +95,7 @@ class S3_Downloader:
 
     def download(self):
         msg = self.msg.format("[download]")
+        print(msg)
 
         for s3_file_path in self.download_file_path_list:
             print(s3_file_path)
@@ -95,6 +121,7 @@ class S3_Downloader:
 def main():
     s3d = S3_Downloader()
     s3d.check_all_items(verbose=False)
+    s3d.check_prefix_items()
     s3d.sort_size_each_directory()
     s3d.download()
     s3d.make_download_list()
