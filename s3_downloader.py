@@ -23,12 +23,17 @@ class S3_Downloader:
         self.output_list_name = "output_list"
 
     def setting(self):
-        self.s3 = boto3.resource("s3")
+        self.session = Session(aws_access_key_id=ACCESS_KEY,
+                                aws_secret_access_key=SECRET_KEY)
+        self.s3 = self.session.resource("s3")
+
+        # self.s3 = boto3.resource("s3")
         self.bucket_name = BUCKET_NAME
         print("region_name: {}".format(boto3.DEFAULT_SESSION))
         self.bucket = self.s3.Bucket(self.bucket_name)
 
-        self.s3client = Session().client("s3")
+        # self.s3client = Session().client("s3")
+        self.s3client = self.session.client("s3")
 
     def print_object_info(self, obj):
         print(obj)
