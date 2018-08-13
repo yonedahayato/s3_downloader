@@ -1,0 +1,6 @@
+BUCKET_NAME = ""
+
+DIR_LIST = []
+
+ACCESS_KEY = ""
+SECRET_KEY = ""
