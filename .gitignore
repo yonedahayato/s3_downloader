@@ -1,5 +1,6 @@
 .DS_Store
 setting.py
+setting_quick.py
 upload_test.txt
 
 output/

@@ -60,20 +60,17 @@ class S3_Downloader:
             response = self.s3client.list_objects(Bucket=self.bucket_name, Prefix=dir_name)
 
             if "Contents" in response:
-                keys = [content["Key"] for content in response["Contents"]]
+                keys = [content["Key"] for content in response["Contents"] if SUFFIX in content["Key"]]
 
                 print("IsTruncated: {}".format(response["IsTruncated"]))
                 if response["IsTruncated"]: # 1000件以上の場合
                     # keys = [obj.key for obj in self.bucket.objects.all() if obj.key.startswith(dir_name)]
                     pass
 
-                for File in FILE_LIST:
-                    if File in keys:
-                        print(File)
             else:
                 print("{} is empty".format(dir_name))
 
-        self.download_file_path_list = FILE_LIST
+        self.download_file_path_list = keys
 
     def check_items_num(self):
         objects = list(self.bucket.objects.all())
@@ -125,11 +122,11 @@ class S3_Downloader:
 
 def main():
     s3d = S3_Downloader()
-    s3d.check_all_items(verbose=False)
+    # s3d.check_all_items(verbose=False)
     s3d.check_prefix_items()
-    s3d.sort_size_each_directory()
-    s3d.download()
-    s3d.make_download_list()
+    # s3d.sort_size_each_directory()
+    # s3d.download()
+    # s3d.make_download_list()
 
 
 if __name__ == "__main__":
